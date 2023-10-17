@@ -6,42 +6,35 @@ const keyLocalStorage = 'feedback-form-state';
 feedbackForm.addEventListener('input', throttle(saveInput, 500));
 feedbackForm.addEventListener('submit', onSubmit);
 
-let formData = {
-  email: '',
-  message: '',
-};
+let formData = {};
 
 reloadPage();
 
 const { email, message } = feedbackForm.elements;
 
-function saveInput() {
-  formData = {
-    email: email.value,
-    message: message.value,
-  };
+function saveInput(e) {
+  formData[e.target.name] = e.target.value.trim();
   localStorage.setItem(keyLocalStorage, JSON.stringify(formData));
 }
 
 function onSubmit(event) {
   event.preventDefault();
 
-  formData = {
-    email: email.value,
-    message: message.value,
-  };
-
   console.log(formData);
-
+  formData = {};
   localStorage.removeItem(keyLocalStorage);
   event.currentTarget.reset();
 }
 
 function reloadPage() {
-  const savedData = JSON.parse(localStorage.getItem(keyLocalStorage));
-
-  if (savedData) {
-    feedbackForm.email.value = savedData.email;
-    feedbackForm.message.value = savedData.message;
+  try {
+    const savedData = localStorage.getItem(keyLocalStorage);
+    if (!savedData) return;
+    formState = JSON.parse(savedData);
+    Object.entries(formState).forEach(([key, val]) => {
+      feedbackForm.elements[key].value = val;
+    });
+  } catch (error) {
+    console.log(error.message);
   }
 }

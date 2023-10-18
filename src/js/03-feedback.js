@@ -30,8 +30,8 @@ function reloadPage() {
   try {
     const savedData = localStorage.getItem(keyLocalStorage);
     if (!savedData) return;
-    formState = JSON.parse(savedData);
-    Object.entries(formState).forEach(([key, val]) => {
+    formData = JSON.parse(savedData);
+    Object.entries(formData).forEach(([key, val]) => {
       feedbackForm.elements[key].value = val;
     });
   } catch (error) {
